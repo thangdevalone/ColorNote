@@ -17,7 +17,7 @@ def handleNotes(param):
     if (request.method == "POST"):
         try:
             json = request.json
-            data = Notes(idUser=param, type=json['type'], pinned=json['pinned'],data=json['data'], date=datetime.strptime(json['date'],"%d/%m/%Y %H:%M:%S"), color=json['color'])
+            data = Notes(idUser=param, type=json['type'], title=json['title'],pinned=json['pinned'],data=json['data'], date=datetime.strptime(json['date'],"%d/%m/%Y %H:%M:%S"), color=json['color'])
             db.session.add(data)
             db.session.commit()
             return {'status': 200, 'message': 'Note was created successfully'}
@@ -37,8 +37,6 @@ def handleNotes(param):
                     note_query.data = json['data']
                 if(key=='pinned'):
                     note_query.pinned = json['pinned']
-                if(key=='type'):
-                    note_query.type = json['type']
             
             db.session.add(note_query)
             db.session.commit()
