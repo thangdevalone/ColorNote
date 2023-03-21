@@ -11,7 +11,7 @@ class Notes(db.Model):
     title = Column(String(50), nullable=False)
     data = Column(String(500))
     pinned = Column(Boolean, nullable=False, default=0)
-    date = Column(DateTime, nullable=False)
+    date = Column(DateTime(timezone=True), nullable=False)
     color = Column(String(20), nullable=False)
 
    

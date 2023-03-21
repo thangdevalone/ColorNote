@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import *
+from flask_jwt_extended import JWTManager
 app = Flask(__name__)
 CORS(app)
 app.config["SECRET_KEY"]="devsenior"
@@ -11,9 +12,11 @@ app.config['SQLAlCHEMY_TRACK_MODIFICATIONS']=True
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT']=465
 app.config['MAIL_USERNAME']="quangthanghocmai3@gmail.com"
-app.config['MAIL_PASSWORD']="misoqnvbknqcslia"
+app.config['MAIL_PASSWORD']="qkceofqdfgdffzfz"
 app.config['MAIL_USE_TLS']=False
 app.config['MAIL_USE_SSL']=True
+
+jwt=JWTManager(app)
 app.app_context().push()
 mail=Mail(app)
 db=SQLAlchemy(app)
