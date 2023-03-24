@@ -4,8 +4,6 @@ from flask import jsonify, request,make_response
 from passlib.hash import pbkdf2_sha256
 from source import app
 from flask_jwt_extended import create_access_token
-
-
 def loginUser():
     if (request.method == 'POST'):
         json = request.json

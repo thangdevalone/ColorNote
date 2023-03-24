@@ -6,7 +6,9 @@ from source.main.function.loginUser import loginUser
 from flask import jsonify, make_response, request,url_for,redirect
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import *
+from sqlalchemy import or_
 from source.main.model.users import Users
+
 s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 import webbrowser
 app.add_url_rule('/user/<string:param>',methods=['GET','PATCH','DELETE'],view_func=handleUsers)
@@ -20,11 +22,11 @@ def verifylink():
         json=request.json
         print(json)
         if (bool(json)):
-            user= Users.query.filter(Users.user_name == json["user_name"]).first()
+            user= Users.query.filter(or_(Users.user_name == json["user_name"] , Users.user_name == json["gmail"])).first()
             print(user)
             if(not user):
                 token=s.dumps(json,salt=app.config["SECURITY_PASSWORD_SALT"])
-                msg=Message('Confirmation',sender="quangthanghocmai3@gmail.com",recipients=[json['gmail']])
+                msg=Message('Confirmation',sender=app.config['MAIL_USERNAME'],recipients=[json['gmail']])
                 link=url_for('confirm',token=token,_external=True)
                 msg.body="Your confirmation link is " +link
                 mail.send(msg)
@@ -43,4 +45,4 @@ def confirm(token):
     except:
         return "Your link was expired. Try again"
     
-    return redirect("https://www.facebook.com/")
+    return "Confirm successfully. Try to login"
