@@ -22,7 +22,7 @@ def verifylink():
         json=request.json
         print(json)
         if (bool(json)):
-            user= Users.query.filter(or_(Users.user_name == json["user_name"] , Users.user_name == json["gmail"])).first()
+            user= Users.query.filter(or_(Users.user_name == json["user_name"] , Users.gmail == json["gmail"])).first()
             print(user)
             if(not user):
                 token=s.dumps(json,salt=app.config["SECURITY_PASSWORD_SALT"])
@@ -32,7 +32,7 @@ def verifylink():
                 mail.send(msg)
                 return {'status': 200, 'message': "Please check your email or spam"}
             else:
-                return  make_response(jsonify({'status': 400, 'message': 'Account already exists'}),400)
+                return  make_response(jsonify({'status': 400, 'message': 'Account or gmail already exists'}),400)
         else:
             return  make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}),400)
     except: 
