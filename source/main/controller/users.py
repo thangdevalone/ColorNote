@@ -9,6 +9,9 @@ from flask_mail import *
 from sqlalchemy import or_
 from source.main.model.users import Users
 
+
+
+
 s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 import webbrowser
 app.add_url_rule('/user/<string:param>',methods=['GET','PATCH','DELETE'],view_func=handleUsers)
@@ -18,25 +21,25 @@ app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 
 @app.route('/register',methods=["GET","POST"])
 def verifylink():
-    try:
-        json=request.json
-        print(json)
-        if (bool(json)):
-            user= Users.query.filter(or_(Users.user_name == json["user_name"] , Users.gmail == json["gmail"])).first()
-            print(user)
-            if(not user):
-                token=s.dumps(json,salt=app.config["SECURITY_PASSWORD_SALT"])
-                msg=Message('Confirmation',sender=app.config['MAIL_USERNAME'],recipients=[json['gmail']])
-                link=url_for('confirm',token=token,_external=True)
-                msg.body="Your confirmation link is " +link
-                mail.send(msg)
-                return {'status': 200, 'message': "Please check your email or spam"}
-            else:
-                return  make_response(jsonify({'status': 400, 'message': 'Account or gmail already exists'}),400)
+    # try:
+    json=request.json
+    print(json)
+    if (bool(json)):
+        user= Users.query.filter(or_(Users.user_name == json["user_name"] , Users.gmail == json["gmail"])).first()
+        print(user)
+        if(not user):
+            token=s.dumps(json,salt=app.config["SECURITY_PASSWORD_SALT"])
+            msg=Message('Confirmation',sender=app.config['MAIL_USERNAME'],recipients=[json['gmail']])
+            link=url_for('confirm',token=token,_external=True)
+            msg.body="Your confirmation link is " +link
+            mail.send(msg)
+            return {'status': 200, 'message': "Please check your email or spam"}
         else:
+            return  make_response(jsonify({'status': 400, 'message': 'Account or gmail already exists'}),400)
+    else:
             return  make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}),400)
-    except: 
-        return make_response(jsonify({'status': 400, 'message': 'Server had some problem. Please try again after 24h'}),400)
+    # except: 
+    #     return make_response(jsonify({'status': 400, 'message': 'Server had some problem. Please try again after 24h'}),400)
 @app.route('/confirm/<token>')
 def confirm(token):
     try:

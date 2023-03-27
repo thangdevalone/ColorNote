@@ -1,6 +1,8 @@
 from source import db
 from sqlalchemy import Column,String,Integer,DateTime
 from sqlalchemy.orm import relationship
+
+
 import datetime
 import jwt
 from sqlalchemy.sql import func
@@ -12,7 +14,11 @@ class Users(db.Model):
     gmail=Column(String(70))
     user_name=Column(String(50))
     password_hash=Column(String(500),nullable=False)
-    notes=relationship('Notes',backref='users',lazy=True)
+    notes=relationship('Notes',backref='users',lazy=True, cascade="all, delete")
+    df_color=Column(String(20),default="#FD8E8E")
+    df_screen=Column(String(20),default="Archived")
+    df_fontsize=Column(String(20),default="Default")
+    
     createAt=Column(DateTime(timezone=True),default=func.now())
     def encode_auth_token(self, user_id):
         """

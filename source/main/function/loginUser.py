@@ -7,9 +7,8 @@ from flask_jwt_extended import create_access_token
 def loginUser():
     if (request.method == 'POST'):
         json = request.json
-        User = Users.query.filter(Users.user_name == json["user_name"]).first()
         try:
-           
+            User = Users.query.filter(Users.user_name == json["user_name"]).first()
             if (User):
                 print(User)
                 if(pbkdf2_sha256.verify(json["password"],User.password_hash)):

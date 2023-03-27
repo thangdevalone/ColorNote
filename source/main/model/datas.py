@@ -10,4 +10,3 @@ class Datas(db.Model):
     doneContent=Column(Boolean, nullable=False, default=0)
 
    
-        

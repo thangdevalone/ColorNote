@@ -16,6 +16,7 @@ class Notes(db.Model):
     color = Column(String(20), nullable=False)
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
+    inArchived=Column(Boolean, nullable=False, default=1)
     createAt=Column(DateTime(timezone=True),default=func.now())
     datas=relationship('Datas',backref='notes',lazy=True, cascade="all, delete")
 
