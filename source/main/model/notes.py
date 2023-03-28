@@ -1,5 +1,5 @@
 from source import db
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime,Float
 from source.main.model.users import Users
 from sqlalchemy.sql import func
 
@@ -10,10 +10,14 @@ class Notes(db.Model):
     idNote = Column(Integer, primary_key=True, autoincrement=True)
     idUser = Column(Integer, ForeignKey(Users.id), nullable=False)
     type = Column(String(20), nullable=False)
-    title = Column(String(50), nullable=False)
+    title = Column(String(70), nullable=False)
     pinned = Column(Boolean, nullable=False, default=0)
     dueAt = Column(DateTime(timezone=True), nullable=False)
-    color = Column(String(20), nullable=False)
+    r=Column(Integer,nullable=False)
+    g=Column(Integer,nullable=False)
+    b=Column(Integer,nullable=False)
+    a=Column(Float,nullable=False,default=0)
+    
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
     inArchived=Column(Boolean, nullable=False, default=1)

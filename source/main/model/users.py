@@ -1,5 +1,5 @@
 from source import db
-from sqlalchemy import Column,String,Integer,DateTime
+from sqlalchemy import Column,String,Integer,DateTime,Float
 from sqlalchemy.orm import relationship
 
 
@@ -15,7 +15,11 @@ class Users(db.Model):
     user_name=Column(String(50))
     password_hash=Column(String(500),nullable=False)
     notes=relationship('Notes',backref='users',lazy=True, cascade="all, delete")
-    df_color=Column(String(20),default="#FD8E8E")
+    r=Column(Integer,nullable=False,default=255)
+    g=Column(Integer,nullable=False,default=125)
+    b=Column(Integer,nullable=False,default=125)
+    a=Column(Float,nullable=False,default=0.87)
+    
     df_screen=Column(String(20),default="Archived")
     df_fontsize=Column(String(20),default="Default")
     
