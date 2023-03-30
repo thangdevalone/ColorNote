@@ -5,6 +5,8 @@ from source.main.function.handleNotes import delTruncNote
 from source.main.function.handleNotes import trashGet
 from source.main.function.handleNotes import trashRestore
 from source.main.function.handleNotes import tickerBox
+from source.main.function.handleNotes import getLastNote
+
 
 
 
@@ -22,3 +24,5 @@ app.add_url_rule('/trash-res/<string:id>',
 
 app.add_url_rule('/tick/<string:idData>',
                  methods=["PATCH"], view_func=tickerBox)
+app.add_url_rule('/last-note/<string:id>',
+                 methods=["GET"], view_func=getLastNote)

@@ -220,3 +220,17 @@ def trashRestore(id):
             return {'status': 200, 'message': 'Note was restore successfully', "note": getNote(note_query.idNote)}
         except:
             return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+
+
+def getLastNote(id):
+    try:
+        if (request.method== "GET"):
+            
+            sql = db.session.execute(text(
+            'select max(idNote) as MaxId  from notes where idUser={}'.format(id)))
+            for note in sql:
+                return {'status': 200,  "idNoteLast":note.MaxId}
+    except:
+            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+
+        
