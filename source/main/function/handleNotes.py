@@ -29,7 +29,7 @@ def getNotes(notes):
                 note_parse["title"] = note.title
                 note_parse["doneNote"] = note.doneNote
                 note_parse["createAt"] = str(note.createAt)
-                note_parse["dueAt"] = note.dueAt
+                note_parse["dueAt"] = str(note.dueAt)
                 note_parse["pinned"] = note.pinned
                 note_parse["idUser"] = note.idUser
                 note_parse["color"] = {'r': note.r,
