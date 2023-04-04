@@ -129,7 +129,7 @@ def handleNotes(param):
             note_query = Notes.query.get(param)
             for key in list(json.keys()):
                 if (key == 'dueAt'):
-                    note_query.date = datetime.strptime(
+                    note_query.dueAt = datetime.strptime(
                         json['dueAt'], "%d/%m/%Y %H:%M %p %z")
                 if (key == 'color'):
                     color = json['color']
@@ -222,12 +222,12 @@ def trashRestore(id):
             return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
 
 
-def getLastNote(id):
+def getLastNote():
     try:
         if (request.method== "GET"):
             
             sql = db.session.execute(text(
-            'select max(idNote) as MaxId  from notes where idUser={}'.format(id)))
+            'select max(idNote) as MaxId  from notes'))
             for note in sql:
                 return {'status': 200,  "idNoteLast":note.MaxId}
     except:

@@ -24,5 +24,5 @@ app.add_url_rule('/trash-res/<string:id>',
 
 app.add_url_rule('/tick/<string:idData>',
                  methods=["PATCH"], view_func=tickerBox)
-app.add_url_rule('/last-note/<string:id>',
+app.add_url_rule('/last-note',
                  methods=["GET"], view_func=getLastNote)
