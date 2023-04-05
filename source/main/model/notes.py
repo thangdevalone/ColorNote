@@ -12,12 +12,13 @@ class Notes(db.Model):
     type = Column(String(20), nullable=False)
     title = Column(String(70), nullable=False)
     pinned = Column(Boolean, nullable=False, default=0)
-    dueAt = Column(DateTime(timezone=True), nullable=False)
+    dueAt = Column(DateTime(timezone=True))
     r=Column(Integer,nullable=False)
     g=Column(Integer,nullable=False)
     b=Column(Integer,nullable=False)
     a=Column(Float,nullable=False,default=0)
-    
+    lock=Column(String(20))
+   
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
     inArchived=Column(Boolean, nullable=False, default=1)

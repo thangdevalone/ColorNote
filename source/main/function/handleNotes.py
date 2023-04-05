@@ -2,6 +2,7 @@
 from sqlalchemy import text
 from source.main.model.notes import Notes
 from source.main.model.datas import Datas
+from passlib.hash import pbkdf2_sha256
 
 from flask import jsonify, make_response, request
 from datetime import datetime, timezone
@@ -29,7 +30,11 @@ def getNotes(notes):
                 note_parse["title"] = note.title
                 note_parse["doneNote"] = note.doneNote
                 note_parse["createAt"] = str(note.createAt)
-                note_parse["dueAt"] = str(note.dueAt)
+                note_parse["dueAt"] = str(note.dueAt) if (
+                    note.dueAt) else note.dueAt
+                note_parse["remindAt"] = str(note.remindAt) if (
+                    note.remindAt) else note.remindAt
+                note_parse["lock"] = note.lock
                 note_parse["pinned"] = note.pinned
                 note_parse["idUser"] = note.idUser
                 note_parse["color"] = {'r': note.r,
@@ -41,7 +46,11 @@ def getNotes(notes):
             note_parse["title"] = note.title
             note_parse["doneNote"] = note.doneNote
             note_parse["createAt"] = str(note.createAt)
-            note_parse["dueAt"] = str(note.dueAt)
+            note_parse["dueAt"] = str(note.dueAt) if (
+                note.dueAt) else note.dueAt
+            note_parse["remindAt"] = str(note.remindAt) if (
+                note.remindAt) else note.remindAt
+            note_parse["lock"] = note.lock
             note_parse["pinned"] = note.pinned
             note_parse["idUser"] = note.idUser
             note_parse["color"] = {'r': note.r,
@@ -69,7 +78,11 @@ def getNote(param):
                 note_parse["title"] = note.title
                 note_parse["doneNote"] = note.doneNote
                 note_parse["createAt"] = str(note.createAt)
-                note_parse["dueAt"] = str(note.dueAt)
+                note_parse["dueAt"] = str(note.dueAt) if (
+                    note.dueAt) else note.dueAt
+                note_parse["remindAt"] = str(note.remindAt) if (
+                    note.remindAt) else note.remindAt
+                note_parse["lock"] = note.lock
                 note_parse["pinned"] = note.pinned
                 note_parse["idUser"] = note.idUser
                 note_parse["color"] = {'r': note.r,
@@ -85,7 +98,11 @@ def getNote(param):
             note_parse["title"] = note.title
             note_parse["doneNote"] = note.doneNote
             note_parse["createAt"] = str(note.createAt)
-            note_parse["dueAt"] = str(note.dueAt)
+            note_parse["dueAt"] = str(note.dueAt) if (
+                note.dueAt) else note.dueAt
+            note_parse["remindAt"] = str(note.remindAt) if (
+                note.remindAt) else note.remindAt
+            note_parse["lock"] = note.lock
             note_parse["pinned"] = note.pinned
             note_parse["idUser"] = note.idUser
             note_parse["color"] = {'r': note.r,
@@ -106,8 +123,19 @@ def handleNotes(param):
             json = request.json
             print(json)
             color = json['color']
-            note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=datetime.strptime(
-                json['dueAt'], "%d/%m/%Y %H:%M %p %z"), r=color['r'], g=color['g'], b=color['b'], a=color['a'])
+            date_dueAt = None
+            if (json['dueAt']):
+                date_dueAt = datetime.strptime(
+                    json['dueAt'], "%d/%m/%Y %H:%M %p %z")
+            date_rmAt = None
+            if (json['remindAt']):
+                date_rmAt = datetime.strptime(
+                    json['remindAt'], "%d/%m/%Y %H:%M %p %z")
+            lockPass = None
+            if (json['lock']):
+                lockPass = pbkdf2_sha256.hash(json["lock"])
+            note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
+                         remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'])
             db.session.add(note)
 
             db.session.commit()
@@ -127,18 +155,29 @@ def handleNotes(param):
         try:
             json = request.json
             note_query = Notes.query.get(param)
+
             for key in list(json.keys()):
                 if (key == 'dueAt'):
-                    note_query.dueAt = datetime.strptime(
-                        json['dueAt'], "%d/%m/%Y %H:%M %p %z")
+                    date_dueAt = None
+                    if (json['dueAt']):
+                        date_dueAt = datetime.strptime(
+                            json['dueAt'], "%d/%m/%Y %H:%M %p %z")
+
+                    note_query.dueAt = date_dueAt
+                if (key == 'remindAt'):
+                    date_rmAt = None
+                    if (json['remindAt']):
+                        date_rmAt = datetime.strptime(
+                            json['remindAt'], "%d/%m/%Y %H:%M %p %z")
+                    note_query.dueAt = date_rmAt
                 if (key == 'color'):
                     color = json['color']
                     note_query.r = color['r']
                     note_query.g = color['g']
                     note_query.b = color['b']
                     note_query.a = color['a']
-                if(key=='title'):
-                    note_query.title=json['title']
+                if (key == 'title'):
+                    note_query.title = json['title']
                 if (key == 'data'):
 
                     if (json['type'] == 'text'):
@@ -150,15 +189,14 @@ def handleNotes(param):
 
                     if (json['type'] == 'checklist'):
                         trunc_data = Datas.query.filter(
-                                Datas.idNote == param).all()
+                            Datas.idNote == param).all()
                         for item in trunc_data:
                             db.session.delete(item)
                         db.session.commit()
                         for edit in json['data']:
                             data = Datas(idNote=param,
-                                            content=edit['content'], doneContent=edit['status'])
+                                         content=edit['content'], doneContent=edit['status'])
                             db.session.add(data)
-                        
 
                 if (key == 'pinned'):
                     note_query.pinned = json['pinned']
@@ -179,16 +217,18 @@ def handleNotes(param):
         except:
             return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
 
+
 def tickerBox(idData):
     if (request.method == 'PATCH'):
-        # try:
-            data=Datas.query.filter(Datas.idData==idData).first()
-            data.doneContent=not data.doneContent
+        try:
+            data = Datas.query.filter(Datas.idData == idData).first()
+            data.doneContent = not data.doneContent
             db.session.add(data)
             db.session.commit()
             return {'status': 200, 'message': 'Note was update successfully'}
-        # except:
-        #     return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+        except:
+            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+
 
 def delTruncNote(id):
     if (request.method == 'DELETE'):
@@ -224,13 +264,11 @@ def trashRestore(id):
 
 def getLastNote():
     try:
-        if (request.method== "GET"):
-            
-            sql = db.session.execute(text(
-            'select max(idNote) as MaxId  from notes'))
-            for note in sql:
-                return {'status': 200,  "idNoteLast":note.MaxId}
-    except:
-            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+        if (request.method == "GET"):
 
-        
+            sql = db.session.execute(text(
+                'select max(idNote) as MaxId  from notes'))
+            for note in sql:
+                return {'status': 200,  "idNoteLast": note.MaxId}
+    except:
+        return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
