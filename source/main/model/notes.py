@@ -17,7 +17,7 @@ class Notes(db.Model):
     g=Column(Integer,nullable=False)
     b=Column(Integer,nullable=False)
     a=Column(Float,nullable=False,default=0)
-    lock=Column(String(20))
+    lock=Column(String(200))
    
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
