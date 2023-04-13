@@ -4,16 +4,15 @@ from flask import jsonify, request, make_response
 from passlib.hash import pbkdf2_sha256
 from source import app
 from flask_jwt_extended import create_access_token
-
+from sqlalchemy import or_
 
 def loginUser():
     if (request.method == 'POST'):
         json = request.json
         try:
             User = Users.query.filter(
-                Users.user_name == json["user_name"]).first()
+                or_(Users.user_name == json["user_name"],Users.gmail == json["user_name"])).first()
             if (User):
-                print(User)
                 if (pbkdf2_sha256.verify(json["password"], User.password_hash)):
                     return {'status': 200, 'message': 'Login successfully', 'user': {'id': User.id, 'name': User.name, 'gmail': User.gmail, 'df_color': {'r': User.r,
                                                                                                                                                          'g': User.g, 'b': User.b, 'a': User.a},

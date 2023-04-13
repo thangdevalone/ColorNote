@@ -10,7 +10,7 @@ class Notes(db.Model):
     idNote = Column(Integer, primary_key=True, autoincrement=True)
     idUser = Column(Integer, ForeignKey(Users.id), nullable=False)
     type = Column(String(20), nullable=False)
-    title = Column(String(70), nullable=False)
+    title = Column(String(100), nullable=False)
     pinned = Column(Boolean, nullable=False, default=0)
     dueAt = Column(DateTime(timezone=True))
     r=Column(Integer,nullable=False)
