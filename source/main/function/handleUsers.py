@@ -1,21 +1,20 @@
 from source import db
 from source.main.model.users import Users
-from flask import request
+from flask import request,make_response,jsonify
 
-
+from passlib.hash import pbkdf2_sha256
 def handleUsers(param):
-    if (request.method == 'GET'):
-        User = Users.query.get(param)
-
-        return {'user': {'id': User.id, 'name': User.name, 'gmail': User.gmail, 'df_color': {'r': User.r,
-                                                                                             'g': User.g, 'b': User.b, 'a': User.a},
-                         'df_screen': User.df_screen}}
+    
     if (request.method == 'DELETE'):
         try:
+            json = request.json
             user = Users.query.get(param)
-            db.session.delete(user)
-            db.session.commit()
-            return {'status': 200, 'message': 'User was deleted successfully'}
+            if(pbkdf2_sha256.verify(json["password"], user.password_hash)):
+                db.session.delete(user)
+                db.session.commit()
+                return {'status': 200, 'message': 'User was deleted successfully'}
+            else:     
+                return make_response(jsonify({'status': 400, 'message': 'Password has some wrong'}), 400)
         except:
             return {'status': 400, 'message': 'Request failed. Please try again'}
     if (request.method == 'PATCH'):
