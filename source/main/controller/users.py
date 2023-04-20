@@ -46,7 +46,11 @@ def verifylink():
 def confirm(token):
     try:
         json=s.loads(token,salt=app.config["SECURITY_PASSWORD_SALT"],max_age=3600)
-        createUser(json)
+        user=Users.query.filter_by(gmail=json['gmail']).first()
+        if(user):
+            return "Your account was already"
+        else:
+            createUser(json)
     except:
         return "Your link was expired. Try again"
     
