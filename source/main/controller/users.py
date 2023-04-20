@@ -1,9 +1,8 @@
 from source import app,mail
 from source.main.function.handleUsers import handleUsers
 from source.main.function.createUser import createUser
-
 from source.main.function.loginUser import loginUser
-from flask import jsonify, make_response, request,url_for,redirect
+from flask import jsonify, make_response, request,url_for
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import *
 from sqlalchemy import or_
@@ -14,7 +13,7 @@ from source.main.model.users import Users
 
 s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-app.add_url_rule('/user/<string:param>',methods=['GET','PATCH','DELETE'],view_func=handleUsers)
+app.add_url_rule('/user/<string:param>',methods=['PATCH','POST'],view_func=handleUsers)
 app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 
 

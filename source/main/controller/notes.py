@@ -7,12 +7,12 @@ from source.main.function.handleNotes import trashRestore
 from source.main.function.handleNotes import tickerBox
 from source.main.function.handleNotes import getLastNote
 from source.main.function.handleNotes import openLock
-
-
-from source import db
+from source.main.function.handleNotes import getOnlyNote
 
 app.add_url_rule('/notes/<string:param>',
                  methods=['GET', 'POST', "PATCH", "DELETE"], view_func=handleNotes)
+app.add_url_rule('/only/<string:idNote>',
+                 methods=['GET'], view_func=getOnlyNote)
 
 app.add_url_rule('/open-note/<string:idNote>',
                  methods=["POST"], view_func=openLock)

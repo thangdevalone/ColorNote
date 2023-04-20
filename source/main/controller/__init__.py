@@ -2,7 +2,7 @@ from source import app
 from source.main.controller.notes import *
 from source.main.controller.users import *
 
-
+from source.main.controller.groups import *
 
 
 @app.route('/')

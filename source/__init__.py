@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import *
 from flask_jwt_extended import JWTManager
+from flask_socketio import SocketIO,send
+
 app = Flask(__name__)
 CORS(app)
 app.config["SECRET_KEY"]="devsenior"
@@ -20,3 +22,5 @@ jwt=JWTManager(app)
 app.app_context().push()
 mail=Mail(app)
 db=SQLAlchemy(app)
+socketIo=SocketIO(app,cor_allow_origin="*")
+

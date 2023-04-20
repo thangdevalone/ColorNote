@@ -5,7 +5,7 @@ from flask import request,make_response,jsonify
 from passlib.hash import pbkdf2_sha256
 def handleUsers(param):
     
-    if (request.method == 'DELETE'):
+    if (request.method == 'POST'):
         try:
             json = request.json
             user = Users.query.get(param)

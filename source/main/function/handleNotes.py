@@ -1,5 +1,5 @@
 
-from datetime import datetime, timezone
+from datetime import datetime
 
 from flask import jsonify, make_response, request
 from passlib.hash import pbkdf2_sha256
@@ -8,6 +8,7 @@ from sqlalchemy import text
 from source import db
 from source.main.model.datas import Datas
 from source.main.model.notes import Notes
+
 
 
 def getNotes(notes):
@@ -67,7 +68,7 @@ def getNotes(notes):
     return freshData
 
 
-def getNote(param,lock=False):
+def getNote(param,lock=False,babel=False):
     notes = db.session.execute(text(
         'Select * from (select * from notes where notes.idNote={}) as b inner join datas on b.idNote=datas.idNote'.format(param)))
     note_parse = {}
@@ -115,12 +116,16 @@ def getNote(param,lock=False):
                                    'g': note.g, 'b': note.b, 'a': note.a}
 
     if (note.lock):
-        if (lock==True):
+        if (lock==True or babel==True):
             note_parse['data']="Locked"
         note_parse['lock']="*******" 
     return note_parse
 
 
+def getOnlyNote(idNote):
+    if (request.method=="GET"):
+        return {"note":getNote(idNote,babel=True)}
+    
 def handleNotes(param):
     if (request.method == "GET"):
         notes = db.session.execute(text(
