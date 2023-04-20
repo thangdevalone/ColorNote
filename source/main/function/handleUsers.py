@@ -1,7 +1,8 @@
-from source import db
+from source import db,app
 from source.main.model.users import Users
 from flask import request,make_response,jsonify
-
+from sqlalchemy import text
+import jwt
 from passlib.hash import pbkdf2_sha256
 def handleUsers(param):
     
@@ -38,3 +39,25 @@ def handleUsers(param):
             return {'status': 200, 'message': 'User was updated successfully'}
         except:
             return {'status': 400, 'message': 'Request fail. Please try again'}
+
+def getAllUser():
+    if(request.method=="GET"):
+        try:
+            bearer = request.headers.get('Authorization')    # Bearer YourTokenHere
+            token = bearer.split(' ')[1]
+            decoded_data = jwt.decode(jwt=token,
+                            key=app.config["SECRET_KEY"],
+                            algorithms=["HS256"])
+            who=decoded_data['sub']['id']
+            print(decoded_data,who)
+            users=db.session.execute(text("select u.gmail, u.id from users as u where u.id != {}".format(who)))
+            data=[]
+            for user in users:
+                user_config={}
+                user_config["gmail"]=user.gmail
+                user_config["id"]=user.id
+                data.append(user_config)
+            return {'status': 200,'data':data}
+                
+        except:
+            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)

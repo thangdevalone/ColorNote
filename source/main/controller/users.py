@@ -1,5 +1,7 @@
 from source import app,mail
 from source.main.function.handleUsers import handleUsers
+from source.main.function.handleUsers import getAllUser
+
 from source.main.function.createUser import createUser
 from source.main.function.loginUser import loginUser
 from flask import jsonify, make_response, request,url_for
@@ -14,6 +16,8 @@ from source.main.model.users import Users
 s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 app.add_url_rule('/user/<string:param>',methods=['PATCH','POST'],view_func=handleUsers)
+app.add_url_rule('/allUsers',methods=['GET'],view_func=getAllUser)
+
 app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 
 

@@ -8,4 +8,3 @@ from source.main.controller.groups import *
 @app.route('/')
 def reader():
     return '<a href="/docs">/docs</a> to read the documentation'
-
