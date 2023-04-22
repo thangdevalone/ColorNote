@@ -1,5 +1,5 @@
 from source import db
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime,Float
+from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, DateTime,Float,Text
 from source.main.model.users import Users
 from source.main.model.groups import Groups
 
@@ -21,7 +21,7 @@ class Notes(db.Model):
     b=Column(Integer,nullable=False)
     a=Column(Float,nullable=False,default=0)
     lock=Column(String(200))
-   
+    metaData=Column(Text,nullable=True)
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
     inArchived=Column(Boolean, nullable=False, default=1)
