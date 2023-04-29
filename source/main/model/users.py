@@ -14,6 +14,7 @@ class Users(db.Model):
     gmail=Column(String(70))
     user_name=Column(String(50))
     password_hash=Column(String(200),nullable=False)
+    password_hash_2=Column(String(200),nullable=True)
     notes=relationship('Notes',backref='users',lazy=True, cascade="all, delete")
     r=Column(Integer,nullable=False,default=255)
     g=Column(Integer,nullable=False,default=125)
