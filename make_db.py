@@ -3,7 +3,7 @@ from source.main.model.users import Users
 from source.main.model.notes import Notes
 from source.main.model.datas import Datas
 from source.main.model.groups import Groups
-from source.main.model.rooms import Rooms
+from source.main.model.chats import Chats
 from source.main.model.members import Members
 
 

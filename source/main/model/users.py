@@ -1,12 +1,13 @@
-from source import db
-from sqlalchemy import Column,String,Integer,DateTime,Float
-from sqlalchemy.orm import relationship
-
-
 import datetime
+
 import jwt
+from sqlalchemy import Column, DateTime, Float, Integer, String, Text
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from source import app
+
+from source import app, db
+
+
 class Users(db.Model):
     __tablename__ = 'users'
     id=Column(Integer,primary_key=True,autoincrement=True)
@@ -23,5 +24,5 @@ class Users(db.Model):
     df_screen=Column(String(20),default="Archived")
     df_fontsize=Column(String(20),default="Default") 
     createAt=Column(DateTime(timezone=True),default=func.now())
-    
+    linkAvatar=Column(Text,nullable=False,default=f"https://github.com/sonnh7289/python3-download/raw/main/Screenshot%202023-05-04%20at%205.33.53%20PM.png")
    

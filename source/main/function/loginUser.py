@@ -16,7 +16,7 @@ def loginUser():
                 if (pbkdf2_sha256.verify(json["password"], User.password_hash)):
                     return {'status': 200, 'message': 'Login successfully', 'user': {'id': User.id, 'name': User.name, 'gmail': User.gmail,"password_2":User.password_hash_2, 'df_color': {'r': User.r,
                                                                                                                                                          'g': User.g, 'b': User.b, 'a': User.a},
-                                                                                     'df_screen': User.df_screen}, 'jwt': create_access_token(identity={'id': User.id, 'gmail': User.gmail})}, 200
+                                                                                     'df_screen': User.df_screen,"avt":User.linkAvatar}, 'jwt': create_access_token(identity={'id': User.id, 'gmail': User.gmail})}, 200
             return make_response(jsonify({'status': 400, 'message': 'Password or user name has some wrong'}), 400)
         except:
             return make_response(jsonify({'status': 400, 'message': 'Password or user name has some wrong'}), 400)

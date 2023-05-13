@@ -18,7 +18,7 @@ from source.main.model.users import Users
 s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 app.add_url_rule('/user/<string:param>',methods=['PATCH','POST'],view_func=handleUsers)
-app.add_url_rule('/allUsers',methods=['GET'],view_func=getAllUser)
+app.add_url_rule('/allUsers/<string:who>',methods=['GET'],view_func=getAllUser)
 
 app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 app.add_url_rule('/create-pass-2/<string:who>',methods=['POST'],view_func=createPass2)

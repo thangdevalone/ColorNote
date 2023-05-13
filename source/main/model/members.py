@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 from source import db
 from source.main.model.users import Users
 from source.main.model.groups import Groups
+from sqlalchemy.orm import relationship
 
 
 class Members(db.Model):
@@ -13,4 +14,5 @@ class Members(db.Model):
     idUser = Column(Integer,ForeignKey(Users.id),nullable=False)
     role=Column(String(50),nullable=False,default="Member")
     createAt=Column(DateTime(timezone=True),default=func.now())
+    groups=relationship('Groups',backref='groups',lazy=True, cascade="all, delete")
    

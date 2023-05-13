@@ -35,21 +35,17 @@ def handleUsers(param):
                     user.a = color['a']
                 if (key == 'screen'):
                     user.df_screen = json['screen']
+                if (key == 'avt'):
+                    user.linkAvatar = json['avt']
             db.session.add(user)
             db.session.commit()
             return {'status': 200, 'message': 'User was updated successfully'}
         except:
             return {'status': 400, 'message': 'Request fail. Please try again'}
-@jwt_required()
-def getAllUser():
+
+def getAllUser(who):
     if(request.method=="GET"):
-        try:
-            bearer = request.headers.get('Authorization')    # Bearer YourTokenHere
-            token = bearer.split(' ')[1]
             
-            decoded_token = decode_token(token)
-            identity = decoded_token['identity']
-            who=identity['']
             users=db.session.execute(text("select u.gmail, u.id from users as u where u.id != {}".format(who)))
             data=[]
             for user in users:
@@ -60,8 +56,7 @@ def getAllUser():
                 data.append(user_config)
             return {'status': 200,'data':data}
                 
-        except:
-            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+       
 
 def createPass2(who):
     
