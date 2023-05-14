@@ -3,7 +3,7 @@ from source.main.function.handleUsers import handleUsers
 from source.main.function.handleUsers import getAllUser
 from source.main.function.handleUsers import checkPasssword2
 from source.main.function.handleUsers import createPass2
-
+from source.main.function.handleUsers import get20LastestUser
 from source.main.function.createUser import createUser
 from source.main.function.loginUser import loginUser
 from flask import jsonify, make_response, request,url_for
@@ -19,7 +19,7 @@ s=URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 app.add_url_rule('/user/<string:param>',methods=['PATCH','POST'],view_func=handleUsers)
 app.add_url_rule('/allUsers/<string:who>',methods=['GET'],view_func=getAllUser)
-
+app.add_url_rule('/lastUser',methods=['GET'],view_func=get20LastestUser)
 app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 app.add_url_rule('/create-pass-2/<string:who>',methods=['POST'],view_func=createPass2)
 app.add_url_rule('/open-pass-2/<string:who>',methods=['POST'],view_func=checkPasssword2)

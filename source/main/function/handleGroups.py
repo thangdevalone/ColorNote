@@ -119,7 +119,7 @@ def getGroup(id):
 def getMessages(id):
     if (request.method == 'GET'):
         chats = Chats.query.filter_by(
-            idGroup=id).order_by(Chats.sendAt.asc()).all()
+            idGroup=id).order_by(Chats.sendAt.desc()).all()
         data = []
         for chat in chats:
             chat_parse = {}

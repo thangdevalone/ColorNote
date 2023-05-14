@@ -57,7 +57,30 @@ def getAllUser(who):
             return {'status': 200,'data':data}
                 
        
-
+def get20LastestUser():
+    if(request.method=="GET"):       
+        try:
+            users=db.session.execute(text("select  users.gmail ,users.id, users.user_name , users.name ,users.createAt, users.linkAvatar from users Order By users.id   DESC"))
+            index = 0
+            data=[]
+            for user in users:
+                if index >= 20:
+                    break
+                index = index + 1
+                user_config={}
+                user_config["gmail"]=user.gmail
+                user_config["id"]=user.id
+                user_config["user_name"]=user.user_name
+                user_config["name"]=user.name
+                user_config["createAt"]=user.createAt
+                user_config["linkAvatar"]=user.linkAvatar
+                user_config["role"]="Member"
+                data.append(user_config)
+            return {'status': 200,'data':data}
+                
+        except Exception as e:
+            return make_response(jsonify({'status': 400, 'message': str(e) + 'Request fail. Please try again'}), 400)
+      
 def createPass2(who):
     
         try:

@@ -21,6 +21,7 @@ class Notes(db.Model):
     b=Column(Integer,nullable=False)
     a=Column(Float,nullable=False,default=0)
     lock=Column(String(200))
+    notePublic=Column(Integer,nullable=True)
     metaData=Column(Text,nullable=True)
     remindAt=Column(DateTime(timezone=True))
     doneNote=Column(Boolean, nullable=False, default=0)
@@ -28,6 +29,8 @@ class Notes(db.Model):
     createAt=Column(DateTime(timezone=True),default=func.now())
     updateAt=Column(DateTime(timezone=True),default=func.now())
     datas=relationship('Datas',backref='notes',lazy=True, cascade="all, delete")
-
+    notePublic=Column(Integer,nullable=True)
+    linkNoteShare=Column(Text,nullable=True)
+    
    
         

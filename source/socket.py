@@ -3,7 +3,8 @@ from flask_socketio import emit,join_room,leave_room
 from flask import request
 from source import socketIo,db
 from source.main.model.chats import Chats
-import datetime
+from datetime import datetime
+
 
 @socketIo.on('connect')
 def connected():
@@ -37,13 +38,15 @@ def chat_group(data):
     room=data['room']
     message = data['data']
     print(message,data)
-    newChat=Chats(idGroup=room,idSend=message["idSend"],type=message['type'])
+    newChat=Chats(idGroup=room,sendAt=datetime.strptime(
+                message['sendAt'], "%d/%m/%Y %H:%M %p %z"),idSend=message["idSend"],type=message['type'])
     if(newChat.type=="image" or newChat.type=="icon-image" or newChat.type=="muti-image"):
         newChat.image=message['metaData']
     else:
         newChat.text=message['content']
     db.session.add(newChat)
     db.session.commit()
-     # Lấy thời gian hiện tại
     message['sendAt']=str(newChat.sendAt)
+     # Lấy thời gian hiện tại
+
     emit('chat_group',message, room=room)

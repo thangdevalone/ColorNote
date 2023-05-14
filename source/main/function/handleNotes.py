@@ -8,7 +8,9 @@ from sqlalchemy import text
 from source import db
 from source.main.model.datas import Datas
 from source.main.model.notes import Notes
-
+import random  
+import string  
+import uuid
 
 def getNotes(notes):
     data = []
@@ -36,6 +38,8 @@ def getNotes(notes):
                     note.remindAt) else note.remindAt
                 note_parse["lock"] = note.lock
                 note_parse["pinned"] = note.pinned
+                note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+                note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
                 note_parse["idUser"] = note.idUser
                 note_parse["color"] = {'r': note.r,
                                        'g': note.g, 'b': note.b, 'a': note.a}
@@ -53,9 +57,11 @@ def getNotes(notes):
             note_parse["lock"] = note.lock
             note_parse["pinned"] = note.pinned
             note_parse["idUser"] = note.idUser
+            note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+            note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
             note_parse["color"] = {'r': note.r,
                                    'g': note.g, 'b': note.b, 'a': note.a}
-        if (note.type == 'image'):
+        if (note.type == 'image' or note.type=="screenshot"):
             note_parse["idNote"] = note.idNote
             note_parse["type"] = note.type
             note_parse["data"] = note.content
@@ -68,6 +74,8 @@ def getNotes(notes):
                 note.remindAt) else note.remindAt
             note_parse["lock"] = None
             note_parse["metaData"] = note.metaData
+            note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+            note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
             note_parse["pinned"] = note.pinned
             note_parse["idUser"] = note.idUser
             note_parse["color"] = {'r': note.r,
@@ -82,6 +90,11 @@ def getNotes(notes):
         freshData.append(note_parse)
     return freshData
 
+def specific_string(length):  
+    sample_string = 'pqrstuvwxy' # define the specific string  
+    # define the condition for random string  
+    result = ''.join((random.choice(sample_string)) for x in range(length))  
+    print(" Randomly generated string is: ", result)  
 
 def getNote(param, lock=False, babel=False):
     notes = db.session.execute(text(
@@ -106,6 +119,8 @@ def getNote(param, lock=False, babel=False):
                     note.remindAt) else note.remindAt
                 note_parse["lock"] = None
                 note_parse["pinned"] = note.pinned
+                note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+                note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
                 note_parse["idUser"] = note.idUser
                 note_parse["color"] = {'r': note.r,
                                        'g': note.g, 'b': note.b, 'a': note.a}
@@ -120,6 +135,8 @@ def getNote(param, lock=False, babel=False):
             note_parse["title"] = note.title
             note_parse["doneNote"] = note.doneNote
             note_parse["createAt"] = str(note.createAt)
+            note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+            note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
             note_parse["dueAt"] = str(note.dueAt) if (
                 note.dueAt) else note.dueAt
             note_parse["remindAt"] = str(note.remindAt) if (
@@ -129,11 +146,13 @@ def getNote(param, lock=False, babel=False):
             note_parse["idUser"] = note.idUser
             note_parse["color"] = {'r': note.r,
                                    'g': note.g, 'b': note.b, 'a': note.a}
-        if (note.type == 'image'):
+        if (note.type == 'image' or note.type == "screenshot"):
             note_parse["idNote"] = note.idNote
             note_parse["type"] = note.type
             note_parse["data"] = note.content
             note_parse["title"] = note.title
+            note_parse['notePublic'] =   note.notePublic   # ___SONPIPI____
+            note_parse['linkNoteShare'] =   note.linkNoteShare   # ___SONPIPI____
             note_parse["doneNote"] = note.doneNote
             note_parse["createAt"] = str(note.createAt)
             note_parse["dueAt"] = str(note.dueAt) if (
@@ -157,6 +176,22 @@ def getOnlyNote(idNote):
     if (request.method == "GET"):
         return {"note": getNote(idNote, babel=True)}
 
+def genLinkWebNotes(idNote):
+    if (request.method == "GET"):
+        return {"note": getNote(idNote, babel=True)}
+    
+def getPublicNotes():
+    if (request.method == "GET"):
+        notes = db.session.execute(text(
+            'Select * from (select * from notes where notes.notePublic=1 and notes.inArchived=1) as b inner join datas on b.idNote=datas.idNote'))
+        return {"notes": getNotes(notes)}
+
+def my_random_string(string_length=10):
+    """Returns a random string of length string_length."""
+    random = str(uuid.uuid4()) # Convert UUID format to a Python string.
+    random = random.upper() # Make all characters uppercase.
+    random = random.replace("-","") # Remove the UUID '-'.
+    return random[0:string_length] # Return the random string.
 
 def handleNotes(param):
     if (request.method == "GET"):
@@ -186,17 +221,25 @@ def handleNotes(param):
 
             if (lockPass):
                 note_lock = True
-
+            #   linkNoteShare
             note = {}
             if ("metaData" in json):
-
-                note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
-                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'], metaData=json['metaData'])
+                if ("notePublic" in json):
+                    linkNoteShare = my_random_string(6)
+                    note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
+                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'], metaData=json['metaData'], notePublic = json['notePublic'] )
+                else:
+                    note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
+                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'], metaData=json['metaData'], notePublic = 0)
             else:
-                note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
-                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'])
+                if ("notePublic" in json):
+                    linkNoteShare = my_random_string(6)
+                    note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
+                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'], notePublic = json['notePublic'] )
+                else:
+                    note = Notes(idUser=param, type=json['type'], title=json['title'], pinned=json['pinned'], dueAt=date_dueAt,
+                             remindAt=date_rmAt, lock=lockPass, r=color['r'], g=color['g'], b=color['b'], a=color['a'], notePublic = 0)
             db.session.add(note)
-
             db.session.commit()
             if (json['type'] == 'checklist'):
                 for each in json['data']:
@@ -224,6 +267,11 @@ def handleNotes(param):
                             json['dueAt'], "%d/%m/%Y %H:%M %p %z")
 
                     note_query.dueAt = date_dueAt
+                if (key == 'notePublic'):
+                    notePublic = json['notePublic']
+                    note_query.notePublic = notePublic
+                    linkNoteShare = my_random_string(6)
+                    note_query.linkNoteShare = linkNoteShare
                 if (key == 'remindAt'):
                     date_rmAt = None
                     if (json['remindAt']):
@@ -343,7 +391,7 @@ def getLastNote():
     except:
         return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
 
-
+    
 def openLock(idNote):
     try:
         if (request.method == "POST"):
