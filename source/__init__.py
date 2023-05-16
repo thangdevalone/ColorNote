@@ -12,7 +12,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import set_access_cookies
 app = Flask(__name__)
-CORS(app,resources={r"/*": {"origins": ["http://localhost:3000", "https://samnotes.online"]}})
+CORS(app)
 app.config["SECRET_KEY"]="devsenior"
 app.config["SECURITY_PASSWORD_SALT"]="devsenior"
 app.config['SQLALCHEMY_DATABASE_URI']="mysql+pymysql://root:123456@localhost/colornote?charset=utf8"
@@ -42,5 +42,5 @@ def refresh_expiring_jwts(response):
 app.app_context().push()
 mail=Mail(app)
 db=SQLAlchemy(app)
-socketIo=SocketIO(app,cors_allowed_origins=["http://localhost:3000", "https://samnotes.online"])
+socketIo=SocketIO(app,cors_allowed_origins="*")
 

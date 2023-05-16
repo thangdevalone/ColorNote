@@ -9,6 +9,7 @@ from source.main.function.handleNotes import getLastNote
 from source.main.function.handleNotes import openLock
 from source.main.function.handleNotes import getOnlyNote
 from source.main.function.handleNotes import getPublicNotes
+from source.main.function.handleNotes import getNotesShare
 app.add_url_rule('/notes/<string:param>',
                  methods=['GET', 'POST', "PATCH", "DELETE"], view_func=handleNotes)
 app.add_url_rule('/only/<string:idNote>',
@@ -30,3 +31,5 @@ app.add_url_rule('/last-note',
                  methods=["GET"], view_func=getLastNote)
 app.add_url_rule('/list-user',
                  methods=["GET"], view_func=getLastNote)
+app.add_url_rule('/note-share/<string:nid>',
+                 methods=['get'], view_func=getNotesShare)

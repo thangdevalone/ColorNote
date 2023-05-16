@@ -405,3 +405,10 @@ def openLock(idNote):
 
     except:
         return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+
+
+def getNotesShare(nid):
+    if(request.method=="GET"):
+        note = Notes.query.filter(
+                Notes.linkNoteShare == nid).first()
+        return {'status': 200, 'message': 'Note get successfully', 'note': getNote(note.idNote)}
