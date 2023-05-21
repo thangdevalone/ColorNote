@@ -5,21 +5,24 @@ from source import socketIo,db
 from source.main.model.chats import Chats
 from datetime import datetime
 
-
+connected_clients = {}
+@socketIo.on('online')
+def online():
+    emit('online', connected_clients)
 @socketIo.on('connect')
 def connected():
     user=request.args.get('user')
-    print('Client is connected')
-    socketIo.clients[request.sid] = {
-        'session_id': request.sid,
+    client_id = request.sid
+    client_info = {
+        'session_id': client_id,
         'namespace': request.namespace,
         'request': request,
         'user': user
     }
-    clients = socketIo.clients
+    connected_clients[client_id] = client_info
 
     # Gửi danh sách client đang kết nối cho client vừa kết nối thành công
-    emit('connect', clients)
+    emit('connect', connected_clients)
 
 
 @socketIo.on('disconnected')
