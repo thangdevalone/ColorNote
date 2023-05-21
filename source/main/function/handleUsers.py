@@ -1,11 +1,13 @@
 from source import db,app
 from source.main.model.users import Users
+from source.main.model.notes import Notes
+from .handleNotes import getNotes
 from flask import request,make_response,jsonify
-from sqlalchemy import text
+from sqlalchemy import text,and_
 from flask_jwt_extended.utils import decode_token
 from flask_jwt_extended import jwt_required
 from passlib.hash import pbkdf2_sha256
-import jwt
+ 
 def handleUsers(param):
     if (request.method == 'POST'):
         try:
@@ -105,3 +107,15 @@ def checkPasssword2(who):
                 return make_response(jsonify({'status': 400, 'message': 'Opening screenshot failed!'}), 400)
         except:
             return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+def getProfile(who):
+    if(request.method=="GET"):
+        try:
+            json =request.json
+            User = Users.query.filter_by(id=who).first()
+            notes =  Notes.query.filter(
+            and_(Notes.idUser == who, Notes.notePublic==1)).all()
+            return {"status":200,"notePublic":getNotes(notes),'user': {'id': User.id, 'name': User.name, 'gmail': User.gmail,"password_2":User.password_hash_2, 'df_color': {'r': User.r,
+                                                                                                                                                         'g': User.g, 'b': User.b, 'a': User.a}}}
+        except:
+            return make_response(jsonify({'status': 400, 'message': 'Request fail. Please try again'}), 400)
+        

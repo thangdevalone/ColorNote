@@ -8,11 +8,18 @@ from datetime import datetime
 
 @socketIo.on('connect')
 def connected():
-    print(request.sid)
+    user=request.args.get('user')
     print('Client is connected')
-    emit("connect", {
-        "data": f"id{request.sid} is connected"
-    })
+    socketIo.clients[request.sid] = {
+        'session_id': request.sid,
+        'namespace': request.namespace,
+        'request': request,
+        'user': user
+    }
+    clients = socketIo.clients
+
+    # Gửi danh sách client đang kết nối cho client vừa kết nối thành công
+    emit('connect', clients)
 
 
 @socketIo.on('disconnected')
@@ -50,3 +57,4 @@ def chat_group(data):
      # Lấy thời gian hiện tại
 
     emit('chat_group',message, room=room)
+    

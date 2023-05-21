@@ -1,4 +1,4 @@
-from source import db, app
+from source import db
 from source.main.model.groups import Groups
 from source.main.model.members import Members
 from source.main.model.chats import Chats

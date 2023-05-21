@@ -9,7 +9,7 @@ from source import db
 from source.main.model.datas import Datas
 from source.main.model.notes import Notes
 import random  
-import string  
+
 import uuid
 
 def getNotes(notes):

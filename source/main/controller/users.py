@@ -6,6 +6,8 @@ from source.main.function.handleUsers import createPass2
 from source.main.function.handleUsers import get20LastestUser
 from source.main.function.createUser import createUser
 from source.main.function.loginUser import loginUser
+from source.main.function.handleUsers import getProfile
+
 from flask import jsonify, make_response, request,url_for
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import *
@@ -23,6 +25,7 @@ app.add_url_rule('/lastUser',methods=['GET'],view_func=get20LastestUser)
 app.add_url_rule('/login',methods=['POST'],view_func=loginUser)
 app.add_url_rule('/create-pass-2/<string:who>',methods=['POST'],view_func=createPass2)
 app.add_url_rule('/open-pass-2/<string:who>',methods=['POST'],view_func=checkPasssword2)
+app.add_url_rule('/profile/<string:who>',methods=['GET'],view_func=getProfile)
 
 
 

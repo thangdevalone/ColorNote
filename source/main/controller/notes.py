@@ -32,4 +32,4 @@ app.add_url_rule('/last-note',
 app.add_url_rule('/list-user',
                  methods=["GET"], view_func=getLastNote)
 app.add_url_rule('/note-share/<string:nid>',
-                 methods=['get'], view_func=getNotesShare)
+                 methods=['GET'], view_func=getNotesShare)
