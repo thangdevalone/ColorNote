@@ -1,28 +1,45 @@
 
 from flask_socketio import emit,join_room,leave_room
 from flask import request
-from source import socketIo,db
+from source import socketIo,db,connected_clients
 from source.main.model.chats import Chats
 from datetime import datetime
 
-connected_clients = {}
+
 @socketIo.on('online')
-def online():
-    emit('online', connected_clients)
+def online(data):
+    fl=True
+    print('client connect')
+    for obj in connected_clients:
+        if obj.get('id') == data['user']['id']:
+            fl=False
+            break
+    if(fl==True):
+        connected_clients.append(data['user'])
+    print(connected_clients)
+    # Gửi danh sách client đang kết nối cho client vừa kết nối thành công
+    emit('online', {'online':connected_clients})
+@socketIo.on('offline')
+def offline(client_id ):
+    print(f'user :{client_id}')
+    print('client offline')
+    for obj in connected_clients:
+        if obj.get('id') == client_id:
+            connected_clients.remove(obj)
+            print(connected_clients)
+            break
+    
+    
+    # Gửi danh sách client đang kết nối cho client vừa kết nối thành công
+    emit('offline', {'online':connected_clients})
 @socketIo.on('connect')
 def connected():
-    user=request.args.get('user')
+   
     client_id = request.sid
-    client_info = {
-        'session_id': client_id,
-        'namespace': request.namespace,
-        'request': request,
-        'user': user
-    }
-    connected_clients[client_id] = client_info
-
-    # Gửi danh sách client đang kết nối cho client vừa kết nối thành công
-    emit('connect', connected_clients)
+    
+    print(connected_clients)
+    emit('connect',  {'online':connected_clients})
+    
 
 
 @socketIo.on('disconnected')
